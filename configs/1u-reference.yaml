@@ -1,0 +1,64 @@
+# 1U reference mission — powerorbit's canonical example config.
+#
+# Every number here is grounded in the published literature cited in the
+# project plan (rencana-powerorbit.md §2):
+#   - 500 km LEO: ~94.6 min period, ~35 min eclipse at beta = 0°
+#     (EPS design paper for a 1U CubeSat; BIRDS: 36 min at beta = 0°)
+#   - Solar constant 1361 W/m² (Artemis CubeSat Kit, Univ. Hawaii)
+#   - Triple-junction GaAs cells > 30% efficient (Springer CubeSat-IoT paper)
+#   - 18650 Li-ion cells are the standard CubeSat battery cell
+#   - DoD rule: <= 30% per orbit (EO-1 reference model, 6U, 500 km SSO)
+#
+# The load powers are typical 1U reference values (bus + beacon + camera
+# payload + UHF downlink), not measurements of a specific spacecraft —
+# treat them as a starting point and replace with your own mission numbers.
+#
+# This file is loaded and validated by the Day 2 test suite; keep it valid.
+name: 1u-reference
+
+orbit:
+  # Worst-case eclipse geometry: beta = 0° gives the longest eclipse.
+  altitude_km: 500
+  beta_deg: 0
+
+solar_panel:
+  # One 1U face (~100 cm² usable) of triple-junction GaAs cells.
+  area_m2: 0.01
+  efficiency: 0.30
+  # MPPT / EPS path efficiency.
+  mppt_efficiency: 0.90
+  # 2% power loss per year of mission life.
+  degradation_per_year: 0.02
+
+battery:
+  # 1 x 18650 cell, 2600 mAh @ 3.7 V nominal = 9.62 Wh.
+  capacity_wh: 9.62
+  charge_efficiency: 0.95
+  discharge_efficiency: 0.95
+  # Engineering rules: SoC must stay >= 20%, DoD <= 30% per orbit.
+  min_soc: 0.20
+  max_dod: 0.30
+  initial_soc: 1.0
+
+loads:
+  # Always-on bus: OBC, EPS housekeeping, ADCS idle.
+  - name: bus
+    power_w: 0.5
+    duty_cycle: 1.0
+  # UHF beacon, transmitted 10% of each orbit.
+  - name: beacon
+    power_w: 1.2
+    duty_cycle: 0.10
+  # Camera payload, imaging 10% of each orbit.
+  - name: payload
+    power_w: 3.0
+    duty_cycle: 0.10
+  # UHF downlink, transmitting 5% of each orbit.
+  - name: downlink
+    power_w: 4.0
+    duty_cycle: 0.05
+
+simulation:
+  # 16 orbits ≈ 25.2 hours — one full day of operations.
+  orbits: 16
+  step_minutes: 1

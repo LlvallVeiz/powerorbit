@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/LlvallVeiz/powerorbit/internal/config"
 	"github.com/spf13/cobra"
 )
 
@@ -38,6 +39,28 @@ Until then, 'powerorbit version' confirms the binary works.`,
 		},
 	}
 	rootCmd.AddCommand(versionCmd)
+
+	var configPath string
+	validateCmd := &cobra.Command{
+		Use:   "validate",
+		Short: "Load and validate a mission YAML file",
+		Long: `Load a mission config file, parse it strictly (unknown fields are
+rejected), and check every value against the engineering rules:
+LEO altitude 200–2000 km, panel efficiency in (0, 1], DoD <= 30% per
+orbit, SoC_min >= 20%, and so on. Exits non-zero and lists every
+problem if the config is invalid.`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			m, err := config.Load(configPath)
+			if err != nil {
+				return err
+			}
+			fmt.Fprintf(cmd.OutOrStdout(), "config %q is valid: mission %q, %d load mode(s), orbit-average load %.2f W\n",
+				configPath, m.Name, len(m.Loads), m.AverageLoadW())
+			return nil
+		},
+	}
+	validateCmd.Flags().StringVarP(&configPath, "config", "c", "configs/1u-reference.yaml", "path to the mission YAML file")
+	rootCmd.AddCommand(validateCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
