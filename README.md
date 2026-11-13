@@ -23,12 +23,13 @@ runnable, CI-checkable tool.
 
 ## Status
 
-**Day 2 — mission config.** YAML mission files (`internal/config`) with a
-strict loader (unknown fields are rejected) and full validation: LEO
-altitude 200–2000 km, panel/battery efficiencies in (0, 1], DoD ≤ 30% per
-orbit, SoC_min ≥ 20%, and a shipped 1U reference config
-(`configs/1u-reference.yaml`, numbers from the published literature). The
-simulation engine lands over Days 3–7 per the roadmap below.
+**Day 3 — orbit engine v1.** `internal/orbit` models a circular LEO orbit
+plus a cylindrical Earth-shadow eclipse: Kepler period, eclipse fraction
+from the beta angle, and a sun/eclipse test per orbit angle. Every number
+is validated against the published literature — 500 km: 94 min 37 s period,
+35 min 45 s eclipse at β = 0°; 600 km SSO: 96.66 min period, 35.45 min
+eclipse (IOP study); no eclipse at β = 73° (BIRDS). The simulation engine
+lands over Days 4–7 per the roadmap below.
 
 | Day | Work |
 |---|---|
