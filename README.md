@@ -23,13 +23,13 @@ runnable, CI-checkable tool.
 
 ## Status
 
-**Day 3 — orbit engine v1.** `internal/orbit` models a circular LEO orbit
-plus a cylindrical Earth-shadow eclipse: Kepler period, eclipse fraction
-from the beta angle, and a sun/eclipse test per orbit angle. Every number
-is validated against the published literature — 500 km: 94 min 37 s period,
-35 min 45 s eclipse at β = 0°; 600 km SSO: 96.66 min period, 35.45 min
-eclipse (IOP study); no eclipse at β = 73° (BIRDS). The simulation engine
-lands over Days 4–7 per the roadmap below.
+**Day 4 — PV model.** `internal/power` models solar generation:
+`P = S · A · η · cos θ · SunFactor · η_mppt · (1 − d)^years` with
+S = 1361 W/m², validated against the Day 2/3 numbers — 1U panel:
+4.083 W raw / 3.675 W after MPPT at normal incidence in sunlight,
+2.540 W / 2.286 W orbit-averaged at 500 km, β = 0° (sunlit fraction
+0.6222 from the orbit engine), 4.001 W after one year at 2%/year
+degradation. The simulation engine lands over Days 5–7 per the roadmap below.
 
 | Day | Work |
 |---|---|
